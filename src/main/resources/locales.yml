@@ -1,0 +1,9 @@
+# Locales for SimpleRecipeUnlocker
+messages:
+  self_unlock: "&eDu hast jetzt alle Rezepte! (&f{count}&e neue)"
+  other_unlock_sender: "&aAlle Rezepte für &f{player}&a freigeschaltet (&f{count}&a neue)"
+  other_unlock_target: "&eAlle Rezepte wurden freigeschaltet! (&f{count}&e neue)"
+  join: "&bAlle Rezepte freigeschaltet! (&f{count}&b neue)"
+  player_not_found: "&cSpieler nicht gefunden: {input}"
+  specify_player: "&7Bitte Spielername angeben: /unlockrecipes <Spieler>"
+  reload_done: "&aLocales neu geladen."

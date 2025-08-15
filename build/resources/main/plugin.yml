@@ -1,0 +1,27 @@
+name: SimpleRecipeUnlocker
+main: com.example.myplugin.SimpleRecipeUnlocker
+version: 1.0.0
+author: You
+description: Example Bukkit/Paper plugin skeleton
+api-version: "1.20"
+commands:
+  unlockrecipes:
+    description: Schaltet alle verfügbaren Crafting-Rezepte frei
+    usage: /unlockrecipes [Spieler|reload]
+    permission: simplerecipeunlocker.use
+permissions:
+  simplerecipeunlocker.use:
+    description: Erlaubt das Freischalten von Rezepten
+    default: true
+  simplerecipeunlocker.reload:
+    description: Erlaubt das Neuladen der locales.yml
+    default: op
+  simplerecipeunlocker.other:
+    description: Erlaubt das Freischalten der Rezepte für andere Spieler
+    default: op
+  simplerecipeunlocker.autounlock:
+    description: Erhält automatische Freischaltung beim Join
+    default: true
+  simplerecipeunlocker.broadcast:
+    description: Darf Broadcast bei automatischer Freischaltung auslösen
+    default: op

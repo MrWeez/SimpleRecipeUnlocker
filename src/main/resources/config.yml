@@ -1,0 +1,12 @@
+# General configuration for SimpleRecipeUnlocker
+# Reload with /unlockrecipes reload
+
+settings:
+  # Unlock all recipes automatically when a player joins
+  unlock_on_join: true
+  # Cache all recipes eagerly during onEnable (if false, cache happens lazily)
+  cache_on_enable: true
+  # Broadcast a message to all players when someone joins (uses other_unlock_sender format) after unlock
+  broadcast_unlock_on_join: false
+  # Log in console (FINE level) how many recipes are marked as non-discoverable (special)
+  log_undiscoverable: false

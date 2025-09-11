@@ -2,8 +2,11 @@ name: SimpleRecipeUnlocker
 main: com.example.myplugin.SimpleRecipeUnlocker
 version: 1.0.0
 author: You
-description: Example Bukkit/Paper plugin skeleton
+description: Example Bukkit/Paper/Folia plugin for unlocking recipes
 api-version: "1.20"
+folia-supported: true
+libraries:
+  - com.tcoded:FoliaLib:0.5.1
 commands:
   unlockrecipes:
     description: Schaltet alle verfügbaren Crafting-Rezepte frei

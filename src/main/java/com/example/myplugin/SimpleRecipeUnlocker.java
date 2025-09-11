@@ -1,5 +1,6 @@
 package com.example.myplugin;
 
+import com.tcoded.folialib.FoliaLib;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -23,6 +24,7 @@ import java.util.Set;
 
 public class SimpleRecipeUnlocker extends JavaPlugin implements Listener {
 
+    private FoliaLib foliaLib;
     private Set<NamespacedKey> allRecipeKeys = new HashSet<>();
 
     // Locales (messages) loaded from locales.yml
@@ -55,21 +57,31 @@ public class SimpleRecipeUnlocker extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        foliaLib = new FoliaLib(this);
         saveDefaultConfig();
         loadPluginSettings();
         setupLocales();
-    getLogger().info("SimpleRecipeUnlocker enabled! Preparing recipe list...");
-    getServer().getPluginManager().registerEvents(this, this);
+        getLogger().info("SimpleRecipeUnlocker enabled! Preparing recipe list... (FoliaLib: " + 
+            (foliaLib.isFolia() ? "Folia" : foliaLib.isPaper() ? "Paper" : "Spigot") + " detected)");
+        getServer().getPluginManager().registerEvents(this, this);
         if (settingCacheOnEnable) {
-            cacheAllRecipes();
-        }
-        if (settingUnlockOnJoin) {
-            getServer().getOnlinePlayers().forEach(this::unlockAllRecipesFor);
+            // Use FoliaLib's scheduler for recipe caching
+            foliaLib.getScheduler().runNextTick(task -> {
+                cacheAllRecipes();
+                if (settingUnlockOnJoin) {
+                    for (Player player : getServer().getOnlinePlayers()) {
+                        foliaLib.getScheduler().runAtEntity(player, entityTask -> unlockAllRecipesFor(player));
+                    }
+                }
+            });
         }
     }
 
     @Override
     public void onDisable() {
+        if (foliaLib != null) {
+            foliaLib.getScheduler().cancelAllTasks();
+        }
         getLogger().info("SimpleRecipeUnlocker disabled.");
     }
 
@@ -125,14 +137,16 @@ public class SimpleRecipeUnlocker extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-    if (settingUnlockOnJoin && p.hasPermission(PERM_AUTOUNLOCK)) {
+        if (settingUnlockOnJoin && p.hasPermission(PERM_AUTOUNLOCK)) {
             int newly = unlockAllRecipesFor(p);
             if (newly > 0) {
                 p.sendMessage(format(msgJoin, p, newly));
                 if (settingBroadcastUnlock && p.hasPermission(PERM_BROADCAST)) {
                     // Avoid deprecated broadcast method by iterating players
                     String msg = format(msgOtherUnlockSender, p, newly);
-                    getServer().getOnlinePlayers().forEach(pl -> pl.sendMessage(msg));
+                    for (Player pl : getServer().getOnlinePlayers()) {
+                        foliaLib.getScheduler().runAtEntity(pl, task -> pl.sendMessage(msg));
+                    }
                 }
                 getLogger().info("Unlocked " + newly + " recipes for " + p.getName());
             } else {
